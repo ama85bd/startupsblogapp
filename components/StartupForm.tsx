@@ -11,6 +11,7 @@ import { z } from 'zod';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { createPitch } from '@/lib/actions';
+import axios from 'axios';
 
 const StartupForm = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -28,8 +29,16 @@ const StartupForm = () => {
         link: formData.get('link') as string,
         pitch,
       };
+      const data = {
+        mobile: 1912785980,
+        address: '457/2 D-2, Baitus Salam Mosjid Goli, South Paikpara',
+        image: 'asas',
+        name: 'Asif Mohammad Ashique',
+      };
+      const res = await axios.post('http://localhost:3000/api/tasks', data);
+      console.log('res', res);
 
-      await formSchema.parseAsync(formValues);
+      // await formSchema.parseAsync(formValues);
 
       const result = await createPitch(prevState, formData, pitch);
 
