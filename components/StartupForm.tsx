@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useState } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import MDEditor from '@uiw/react-md-editor';
@@ -20,6 +20,14 @@ const StartupForm = () => {
   const { toast } = useToast();
   const router = useRouter();
 
+  useEffect(() => {
+    fetch('http://localhost:3000/api/tasks').then(async (res) => {
+      console.log('res', res);
+      const data = await res.json();
+      console.log('data', data);
+    });
+  }, []);
+
   const handleFormSubmit = async (prevState: any, formData: FormData) => {
     try {
       const formValues = {
@@ -35,23 +43,36 @@ const StartupForm = () => {
         image: 'asas',
         name: 'Asif Mohammad Ashique',
       };
-      const res = await axios.post('http://localhost:3000/api/tasks', data);
+      // fetch(`http://localhost:3000/api/tasks`, {
+      //   method: 'POST',
+      //   body: JSON.stringify({
+      //     ...data,
+      //   }),
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      // }).then((r) => {
+      //   console.log('rrrrrrrrr', r);
+      // });
+      const res = await axios.post('http://localhost:3000/api/tasks', data, {
+        headers: { 'Content-Type': 'application/json' },
+      });
       console.log('res', res);
 
       // await formSchema.parseAsync(formValues);
 
-      const result = await createPitch(prevState, formData, pitch);
+      // const result = await createPitch(prevState, formData, pitch);
 
-      if (result.status == 'SUCCESS') {
-        toast({
-          title: 'Success',
-          description: 'Your startup pitch has been created successfully',
-        });
+      // if (result.status == 'SUCCESS') {
+      //   toast({
+      //     title: 'Success',
+      //     description: 'Your startup pitch has been created successfully',
+      //   });
 
-        router.push(`/startup/${result._id}`);
-      }
+      //   router.push(`/startup/${result._id}`);
+      // }
 
-      return result;
+      // return result;
     } catch (error) {
       if (error instanceof z.ZodError) {
         const fieldErorrs = error.flatten().fieldErrors;
